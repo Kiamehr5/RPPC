@@ -4,7 +4,7 @@ import time
 
 # ───── OLED SETUP ─────
 i2c = I2C(0, sda=Pin(0), scl=Pin(1), freq=400_000)
-time.sleep(0.1) #debounce 
+time.sleep(0.1) #delay for it to initialize
 oled = SSD1306_I2C(128, 64, i2c)
 
 def display_text(text, y=0):
