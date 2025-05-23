@@ -4,7 +4,7 @@ import time
 
 # ───── OLED SETUP ─────
 i2c = I2C(0, sda=Pin(0), scl=Pin(1), freq=400_000)
-time.sleep(0.1) #delay for it to initialize
+time.sleep(0.1)
 oled = SSD1306_I2C(128, 64, i2c)
 
 def display_text(text, y=0):
@@ -82,9 +82,26 @@ oled.show()
 time.sleep(2)
 
 oled.fill(0)
-oled.text("Enter a key to", 0, 0)
-oled.text("continue...", 0, 10)
+oled.text("Enter / to", 0, 0)
+oled.text("Enter Calculator", 0, 10)
+oled.text("Mode, Enter", 0, 20)
+oled.text("x to Pong", 0, 30)
+oled.text("Enter - to", 0, 40)
+oled.text("Car Game", 0, 50)
 oled.show()
+
+selected = None
+while selected is None:
+    key = scan_keypad()
+    if key in ["/", "x", "-"]:
+        selected = key
+    time.sleep(0.1)
+
+if selected == "x":
+    exec(open("pong.py").read())
+elif selected == "-":
+    exec(open("cargame.py").read())
+    
 
 while not scan_keypad():
     time.sleep(0.1)
@@ -121,3 +138,4 @@ while True:
     while not scan_keypad():
         time.sleep(0.1)
     time.sleep(0.3)
+
