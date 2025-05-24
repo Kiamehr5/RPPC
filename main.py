@@ -90,10 +90,11 @@ oled.text("Enter - to", 0, 40)
 oled.text("Car Game", 0, 50)
 oled.show()
 
+number = 0
 selected = None
 while selected is None:
     key = scan_keypad()
-    if key in ["/", "x", "-"]:
+    if key in ["÷", "x", "-"]:
         selected = key
     time.sleep(0.1)
 
@@ -101,41 +102,46 @@ if selected == "x":
     exec(open("pong.py").read())
 elif selected == "-":
     exec(open("cargame.py").read())
-    
-
-while not scan_keypad():
-    time.sleep(0.1)
-
-# ───── MAIN LOOP ─────
-while True:
-    values = ""
-    last_key = ""
-
-    # Collect input
+else:
+    number += 1
+    if number == 1:
+        oled.fill(0)
+        oled.text("Press a button...", 0,0)
+        oled.show()
+    # ───── MAIN LOOP ─────
     while True:
-        key = scan_keypad()
-        if key:
-            if key == "=":
-                break
-            if key == "x":
-                key = "*"
-            elif key == "÷":
-                key = "/"
-            if not is_valid_input(values, key):
-                continue
-            values += key
-            last_key = key
-            display_text(values)
+        values = ""
+        last_key = ""
 
-    # Evaluate expression
-    try:
-        result = eval(values)
-        display_text(f"= {result}")
-    except Exception:
-        display_text("Error")
+        # Collect input
+        while True:
+            key = scan_keypad()
+            if key:
+                
+                if key == "x":
+                    key = "*"
+                elif key == "÷":
+                    key = "/"
 
-    # Wait for next key to restart
-    while not scan_keypad():
-        time.sleep(0.1)
-    time.sleep(0.3)
+                # Don't add '=' to expression, break input loop
+                if key == "=":
+                    break
+
+                if not is_valid_input(values, key):
+                    continue
+                values += key
+                last_key = key
+                display_text(values)
+
+        # Evaluate expression
+        try:
+            result = eval(values)
+            display_text(f"= {result}")
+        except Exception:
+            display_text("Error")
+
+        # Wait for next key to restart
+        while not scan_keypad():
+            time.sleep(0.1)
+        time.sleep(0.3)
 
